@@ -7,9 +7,8 @@ function randInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min); // The maximum is inclusive and the minimum is inclusive
 }
 
-
 const commands = {
-  ['tc.randomize.plies']: (line: string): string => {
+  ['randomize/plies']: (line: string): string => {
     const startPos = line.indexOf('"<');
     const endPos = line.indexOf('>"');
     const count = randInt(2, 5);
@@ -19,66 +18,86 @@ const commands = {
       line.substring(0, startPos + 2) + newPlies + line.substring(endPos)
     );
   }
-
-
 };
 
-export const evalCommand = () => {
+const reactToKnob = (knob: number, value: number) => {
+  console.log('knob:', knob);
+
   const editor: TextEditor | undefined = window.activeTextEditor;
-  if (!editor) { return; }
+  if (!editor) {
+    console.warn('no editor');
+    return;
+  }
 
   const document = editor?.document;
 
   if (!document) {
+    console.warn('no document');
     return;
   }
 
+  const signal = `knob${knob.toString().padStart(2, "0")}`;
 
   const allText = document.getText();
   const lines = allText.split("\n");
-  const knob1LineIndex = lines.findIndex(l => l.includes('//knob1'));
-  if (knob1LineIndex === -1) {
+  const targetLineNumbers = lines
+    .map((l, i) => ({ line: l, lineNumber: i }))
+    .filter(l => l.line.includes(`//${signal}`))
+    .map(l => l.lineNumber);
+
+  if (targetLineNumbers.length === 0) {
+    console.warn('did not find any target lines', signal);
     return;
   }
 
-  // const position = editor.selection.active;
-  const line = document.lineAt(knob1LineIndex);
+  const edits = targetLineNumbers.map(n => processLineNumber(n, signal, document, editor));
+
+  editor.edit((editBuilder) => {
+    // console.log('replacing', line, newLine);
+    edits.filter(e => e !== null).forEach(e => {
+      if (!!e) {
+        editBuilder.replace(e.range, e.newLine);
+      }
+    });
+  });
+
+};
+
+const processLineNumber = (lineNumber: number, signal: string, document: TextDocument, editor: TextEditor) => {
+  console.log('processing line number', lineNumber);
+  const line = document.lineAt(lineNumber);
   const input = line.text;
 
   if (!input) {
+    console.warn('no input!');
     return;
   }
 
-  if (!input) { return null; }
-  const index = input.indexOf('//tc/');
+  const index = input.indexOf(`//${signal}`);
+
   if (index === -1) {
+    console.warn('signal index not found!');
     return null;
   }
 
-  const parts = input.slice(index + 1).split('/').map(x => x.trim());
-  console.log("parts", parts);
+  const parts = input.slice(index + 1).split('/').map(x => x.trim()).slice(2,4);
+  console.log('parts', parts);
 
   // @ts-ignore
-  const commandString = `${parts[1]}.${parts[2]}.${parts[3]}`;
-  console.log('commandString', commandString);
-
-  console.log('same', 'tc.randomize.plies' === commandString);
-  console.log('tc.randomize.plies');
-  console.log(commandString);
-
-  const see = commands['tc.randomize.plies'];
-  console.log('see?', see);
+  const commandString = parts.join('/');
 
   // @ts-ignore
   const command = commands[commandString];
-  console.log('command', command);
+  if (!command){
+    return null;
+  }
   const newLine = command(input);
-  console.log('newLine', newLine);
 
+  return { range: line.range, newLine };
 
-  editor.edit((editBuilder) => {
-    editBuilder.replace(line.range, newLine);
-  });
+};
 
+export const evalCommand = () => {
+  reactToKnob(1, 0.5);
 };
 
