@@ -7,7 +7,7 @@
 //knobXX/plies/[count|n]/[min]/[max]
 //buttonXX/onoff ✅
 //buttonXX/plytype
-//knobXX/i/[min]/[max]
+//knobXX/i/[min]/[max] ✅
 ```
 
 ## modification
