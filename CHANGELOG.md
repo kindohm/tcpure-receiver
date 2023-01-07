@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.1.0]
+
+- add snapshot command
+
 ## [1.0.1]
 
 - make the web page a little fancier
