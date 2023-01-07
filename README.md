@@ -3,11 +3,11 @@
 ## randomization
 
 ```
-//knobXX/f/[min]/[scale]
+//knobXX/f/[min]/[scale] ✅
 //knobXX/plies/[count|n]/[min]/[max]
-//button1/onoff
-//button1/plytype
-//knob1/i/[min]/[max]
+//buttonXX/onoff ✅
+//buttonXX/plytype
+//knobXX/i/[min]/[max]
 ```
 
 ## modification
