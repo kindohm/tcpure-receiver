@@ -16,7 +16,7 @@ export const startServer = (resourcePath: string) => {
 
   // @ts-ignore
   app.post('/send', (req, res) => {
-    console.log('receiving', req.body);
+    // console.log('receiving', req.body);
     receive(req.body);
 
     res.json({ ...req.body });

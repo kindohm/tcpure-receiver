@@ -1,4 +1,4 @@
-import { alterDocument } from "./alterDocument";
+import { findAndEdit } from "./findAndEdit";
 
 type Signal = {
   cc: number;
@@ -15,6 +15,6 @@ const controllerMap = (new Array(16)).fill(0)
   }, {});
 
 export const receive = (signal: Signal) => {
-  console.log(controllerMap[signal.cc], signal.value);
-  alterDocument({ knob: controllerMap[signal.cc], value: signal.value });
+  // console.log(controllerMap[signal.cc], signal.value);
+  findAndEdit({ knob: controllerMap[signal.cc], value: signal.value });
 };
