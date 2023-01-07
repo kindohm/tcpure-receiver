@@ -16,9 +16,9 @@ export const startServer = (resourcePath: string) => {
 
   // @ts-ignore it's ok
   app.post('/send', (req, res) => {
-    receive(req.body);
+    const result = receive(req.body);
 
-    res.json({ ...req.body });
+    res.json({ ...result });
   });
 
   app.listen(port, () => {

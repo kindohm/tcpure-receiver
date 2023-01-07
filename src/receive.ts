@@ -16,5 +16,5 @@ const controllerMap = (new Array(16)).fill(0)
 
 export const receive = (signal: Signal) => {
   // console.log(controllerMap[signal.cc], signal.value);
-  findAndEdit({ control: controllerMap[signal.cc], value: signal.value });
+  return findAndEdit({ control: controllerMap[signal.cc], value: signal.value });
 };

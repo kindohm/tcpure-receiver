@@ -5,6 +5,8 @@
   <script src="webmidi.js"></script>
   <script type="module">
 
+    const stuff = document.getElementById('stuff');
+
 
     const onEnabled = () => {
 
@@ -18,8 +20,6 @@
       }
 
       twister.channels[1].addListener("controlchange", async (e) => {
-        console.log(e.controller.number + ': ' + e.value);
-
 
         const response = await fetch('/send',
           {
@@ -28,7 +28,11 @@
             }, body: JSON.stringify({ cc: e.controller.number, value: e.value })
           });
         const data = await response.json();
-        console.log('response', data);
+        stuff.prepend(document.createTextNode(JSON.stringify(data)));
+        if (stuff.childNodes.length > 200) {
+          stuff.removeChild(stuff.childNodes[stuff.childNodes.length - 1]);
+        }
+        // console.log('response', data);
 
       });
 
@@ -42,10 +46,35 @@
 
   </script>
 
+  <style>
+    body {
+      background-color: #333;
+      color: #eee;
+      font-family: sans-serif;
+    }
+
+    h1 {
+      font-weight: normal;
+    }
+
+    .container {
+      max-width: 600;
+      margin: auto;
+    }
+
+    #stuff {
+      font-family: monospace;
+      overflow: scroll;
+    }
+  </style>
+
 </head>
 
 <body>
-  <h1>hi</h1>
+  <div class="container">
+    <h1>tcpure-receiver</h1>
+    <div><code id="stuff"></code></div>
+  </div>
 </body>
 
 </html>

@@ -38,5 +38,6 @@ export const findAndEdit = ({ control, value }: { control: string, value: number
     });
   });
 
+  return edits;
 };
 
