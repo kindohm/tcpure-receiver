@@ -1,6 +1,11 @@
 # tcpure-receiver
 
-## randomization
+A VS Code extension that randomizes bits of Tidal code in reaction
+to MIDI controller input.
+
+## DSL
+
+### randomization
 
 ```
 //knobXX/f/[min]/[scale] ✅
@@ -12,7 +17,7 @@
 //knobXX/istep/[count]/[min]/[max] ✅
 ```
 
-## ideas
+## todo
 
 Add a `#walk` suffix to gently modify instead of randomize
 
