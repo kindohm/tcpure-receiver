@@ -1,4 +1,9 @@
-import { Range, TextEditor, TextDocument, window, workspace } from 'vscode';
+import { TextDocument, TextEditor, window } from "vscode";
+
+type KnobSignal = {
+  knob: string;
+  value: number;
+};
 
 // @ts-ignore
 function randInt(min, max) {
@@ -20,9 +25,8 @@ const commands = {
   }
 };
 
-const reactToKnob = (knob: number, value: number) => {
-  console.log('knob:', knob);
 
+export const alterDocument = (knobSignal: KnobSignal) => {
   const editor: TextEditor | undefined = window.activeTextEditor;
   if (!editor) {
     console.warn('no editor');
@@ -36,7 +40,8 @@ const reactToKnob = (knob: number, value: number) => {
     return;
   }
 
-  const signal = `knob${knob.toString().padStart(2, "0")}`;
+  const { knob } = knobSignal;
+  const signal = `${knob.toString().padStart(2, "0")}`;
 
   const allText = document.getText();
   const lines = allText.split("\n");
@@ -53,7 +58,6 @@ const reactToKnob = (knob: number, value: number) => {
   const edits = targetLineNumbers.map(n => processLineNumber(n, signal, document, editor));
 
   editor.edit((editBuilder) => {
-    // console.log('replacing', line, newLine);
     edits.filter(e => e !== null).forEach(e => {
       if (!!e) {
         editBuilder.replace(e.range, e.newLine);
@@ -80,7 +84,7 @@ const processLineNumber = (lineNumber: number, signal: string, document: TextDoc
     return null;
   }
 
-  const parts = input.slice(index + 1).split('/').map(x => x.trim()).slice(2,4);
+  const parts = input.slice(index + 1).split('/').map(x => x.trim()).slice(2, 4);
   console.log('parts', parts);
 
   // @ts-ignore
@@ -88,7 +92,7 @@ const processLineNumber = (lineNumber: number, signal: string, document: TextDoc
 
   // @ts-ignore
   const command = commands[commandString];
-  if (!command){
+  if (!command) {
     return null;
   }
   const newLine = command(input);
@@ -96,8 +100,3 @@ const processLineNumber = (lineNumber: number, signal: string, document: TextDoc
   return { range: line.range, newLine };
 
 };
-
-export const evalCommand = () => {
-  reactToKnob(1, 0.5);
-};
-

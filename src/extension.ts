@@ -1,7 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { evalCommand } from './changeCommand';
 import { startServer } from './server';
 import * as path from 'path';
 
@@ -24,11 +23,11 @@ export function activate(context: vscode.ExtensionContext) {
 		// // The code you place here will be executed every time your command is executed
 		// // Display a message box to the user
 		// vscode.window.showInformationMessage('Hello World from tcpure-receiver!');
-		evalCommand();
+		// evalCommand();
 	});
 
 	context.subscriptions.push(disposable);
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }

@@ -1,33 +1,51 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <script src="webmidi.js"></script>
-    <script type="module">
 
-      // Enable WEBMIDI.js and trigger the onEnabled() function when ready
-      WebMidi
-        .enable()
-        .then(onEnabled)
-        .catch(err => alert(err));
-    
-      // Function triggered when WEBMIDI.js is ready
-      function onEnabled() {
-    
-        // Display available MIDI input devices
-        if (WebMidi.inputs.length < 1) {
-          document.body.innerHTML+= "No device detected.";
-        } else {
-          WebMidi.inputs.forEach((device, index) => {
-            document.body.innerHTML+= `${index}: ${device.name} <br>`;
-          });
-        }
-    
+<head>
+  <script src="webmidi.js"></script>
+  <script type="module">
+
+
+    const onEnabled = () => {
+
+      WebMidi.inputs.forEach((device, index) => {
+        console.log(`${index}: ${device.name}`);
+      });
+
+      const twister = WebMidi.inputs.find(i => i.name.toLowerCase().includes('twister'));
+      if (!twister) {
+        return;
       }
-      
-    </script>
 
-  </head>
-  <body>
-    <h1>hi</h1>
-  </body>
+      twister.channels[1].addListener("controlchange", async (e) => {
+        console.log(e.controller.number + ': ' + e.value);
+
+
+        const response = await fetch('/send',
+          {
+            method: 'post', headers: {
+              'Content-Type': 'application/json'
+            }, body: JSON.stringify({ cc: e.controller.number, value: e.value })
+          });
+        const data = await response.json();
+        console.log('response', data);
+
+      });
+
+
+    }
+
+    WebMidi
+      .enable()
+      .then(onEnabled)
+      .catch(err => alert(err));
+
+  </script>
+
+</head>
+
+<body>
+  <h1>hi</h1>
+</body>
+
 </html>
