@@ -11,13 +11,11 @@ export const startServer = (resourcePath: string) => {
 
   app.use(express.static(resourcePath));
 
-  // parse application/x-www-form-urlencoded
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
 
-  // @ts-ignore
+  // @ts-ignore it's ok
   app.post('/send', (req, res) => {
-    // console.log('receiving', req.body);
     receive(req.body);
 
     res.json({ ...req.body });
