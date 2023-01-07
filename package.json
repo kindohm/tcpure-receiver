@@ -1,5 +1,6 @@
 {
   "name": "tcpure-receiver",
+  "repository": "https://github.com/kindohm/tcpure-receiver",
   "displayName": "tcpure-receiver",
   "description": "",
   "version": "1.0.0",
