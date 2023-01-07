@@ -26,7 +26,7 @@ export const getReplacement = (lineNumber: number, signal: string, document: Tex
 
 
     // @ts-ignore it's fine, really
-    const newLine = alterations[firstKey][parts[1]](input, parts.slice(2));
+    const newLine = alterations[firstKey][parts[1]]({ input, parts: parts.slice(2) });
 
     return { range: line.range, newLine };
   } catch (err) {
