@@ -1,5 +1,5 @@
-import { TextEditor, window } from "vscode";
-import { getReplacement } from './getReplacement';
+import { Range, TextDocument, TextEditor, window } from "vscode";
+import { Edit, getReplacement } from './getReplacement';
 
 
 export const findAndEdit = ({ control, value }: { control: string, value: number }) => {
@@ -16,22 +16,38 @@ export const findAndEdit = ({ control, value }: { control: string, value: number
     return;
   }
 
+  const modAll = control === "knob16";
+
   const allText = document.getText();
   const lines = allText.split("\n");
-  const targetLineNumbers = lines
-    .map((l, i) => ({ line: l, lineNumber: i }))
-    .filter(l => l.line.includes(`//${control}`))
-    .map(l => l.lineNumber);
 
-  if (targetLineNumbers.length === 0) {
-    console.warn('did not find any target lines', control);
-    return;
-  }
 
-  const edits = targetLineNumbers.map(n => getReplacement(n, control, document, editor));
+  const controlsToCheck: string[] = modAll ? (new Array(16)).fill(0).map((x, i) => `knob${(i + 1).toString().padStart(2, "0")}`) : [control];
+
+  const initialEdits: (Edit | null)[] = [];
+  const edits = controlsToCheck.reduce((newEdits, control) => {
+    const controlEdits = getEditsForControl(control, lines, document, editor);
+    return newEdits.concat(controlEdits);
+  }, initialEdits);
+
+  // const edits = getEditsForControl(control, lines, document, editor);
+
+
+
+  // const targetLineNumbers = lines
+  //   .map((l, i) => ({ line: l, lineNumber: i }))
+  //   .filter(l => l.line.includes(`//${control}`))
+  //   .map(l => l.lineNumber);
+
+  // if (targetLineNumbers.length === 0) {
+  //   console.warn('did not find any target lines', control);
+  //   return;
+  // }
+
+  // const edits = targetLineNumbers.map(n => getReplacement(n, control, document, editor));
 
   editor.edit((editBuilder) => {
-    edits.filter(e => e !== null).forEach(e => {
+    edits.filter(e => !!e).forEach(e => {
       if (!!e) {
         editBuilder.replace(e.range, e.newLine);
       }
@@ -40,4 +56,17 @@ export const findAndEdit = ({ control, value }: { control: string, value: number
 
   return edits;
 };
+
+const getEditsForControl = (control: string, lines: string[], document: TextDocument, editor: TextEditor): (Edit | null)[] => {
+  const targetLineNumbers = lines
+    .map((l, i) => ({ line: l, lineNumber: i }))
+    .filter(l => l.line.includes(`//${control}`))
+    .map(l => l.lineNumber);
+
+  if (targetLineNumbers.length === 0) {
+    return [];
+  }
+
+  return targetLineNumbers.map(n => getReplacement(n, control, document, editor));
+}
 

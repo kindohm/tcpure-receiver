@@ -1,8 +1,13 @@
-import { TextDocument, TextEditor } from "vscode";
+import { Range, TextDocument, TextEditor } from "vscode";
 import { getParts } from "./getParts";
 import { alterations } from "./alterations/alterations";
 
-export const getReplacement = (lineNumber: number, signal: string, document: TextDocument, editor: TextEditor) => {
+export type Edit = {
+  range: Range,
+  newLine: string
+};
+
+export const getReplacement = (lineNumber: number, signal: string, document: TextDocument, editor: TextEditor): Edit | null => {
 
   const line = document.lineAt(lineNumber);
   const input = line.text;
@@ -11,7 +16,7 @@ export const getReplacement = (lineNumber: number, signal: string, document: Tex
 
     if (!input) {
       console.warn('no input!');
-      return;
+      return null;
     }
 
     const index = input.indexOf(`//${signal}`);
@@ -23,6 +28,10 @@ export const getReplacement = (lineNumber: number, signal: string, document: Tex
 
     const parts = getParts(index, input);
     const firstKey = parts[0].startsWith('knob') ? 'knob' : 'button';
+
+    if (parts.length === 1) {
+      return null;
+    }
 
 
     // @ts-ignore it's fine, really
