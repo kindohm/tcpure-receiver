@@ -53,8 +53,6 @@ const knobRandomPlies = ({ input, parts }: AlterationArgs) => {
     return input;
   }
 
-  console.log('count', count)
-
   const minPly = parts.length > 1 ? parseInt(parts[1]) : MIN_PLY;
   const maxPly = parts.length > 2 ? parseInt(parts[2]) : minPly + MAX_PLY;
 
@@ -62,14 +60,10 @@ const knobRandomPlies = ({ input, parts }: AlterationArgs) => {
     return input;
   }
 
-  console.log('minmax', minPly, maxPly);
-
   const start = input.indexOf('"');
   const end = input.indexOf('"', start + 1);
   const plies = (new Array(count)).fill(null).map(p => randInt(minPly, maxPly));
   return replaceBetween(input, start, end, `<${plies.join(' ')}>`);
-
-
 };
 
 const buttonRandomOnOff = ({ input, parts }: AlterationArgs) => {
@@ -79,11 +73,28 @@ const buttonRandomOnOff = ({ input, parts }: AlterationArgs) => {
   return replaceBetween(input, start, end, newValue.toString());
 };
 
+const knobRandomPlyType = ({ input, parts }: AlterationArgs) => {
+  const hashStart = input.indexOf('#');
+  const multStart = input.indexOf('|*');
+
+  if (hashStart === -1 && multStart === -1) {
+    return input;
+  }
+
+  const start = hashStart !== -1 ? hashStart : multStart;
+
+  const end = hashStart !== -1 ? hashStart + 1 : multStart + 2;
+  const newValue = Math.random() > 0.5 ? '#' : '|*';
+
+  return `${input.slice(0, start)}${newValue}${input.slice(end)}`;
+};
+
 type Alterations = {
   knob: {
     f: (a: AlterationArgs) => string,
     i: (a: AlterationArgs) => string,
-    plies: (a: AlterationArgs) => string
+    plies: (a: AlterationArgs) => string,
+    plytype: (a: AlterationArgs) => string
   },
   button: {
     onoff: (a: AlterationArgs) => string
@@ -94,7 +105,8 @@ export const alterations: Alterations = {
   knob: {
     f: knobRandomFloat,
     i: knobRandomInt,
-    plies: knobRandomPlies
+    plies: knobRandomPlies,
+    plytype: knobRandomPlyType
   },
   button: {
     onoff: buttonRandomOnOff

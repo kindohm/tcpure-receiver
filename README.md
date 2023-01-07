@@ -4,7 +4,7 @@
 
 ```
 //knobXX/f/[min]/[scale] ✅
-//knobXX/plies/[count|n]/[min]/[max]
+//knobXX/plies/[count|n]/[min]/[max] ✅
 //buttonXX/onoff ✅
 //buttonXX/plytype
 //knobXX/i/[min]/[max] ✅
