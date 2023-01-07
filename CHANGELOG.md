@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.2.0]
+
+- add randomize all command
+
 ## [1.1.0]
 
 - add snapshot command
