@@ -1,3 +1,4 @@
+import { log } from "./output";
 import { receive } from "./receive";
 
 const express = require('express');
@@ -23,7 +24,7 @@ export const startServer = (resourcePath: string) => {
   });
 
   app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
+    log(`tcpure-receiver server listening on port ${port}`);
   });
 
 };

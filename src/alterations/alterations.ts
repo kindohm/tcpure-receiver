@@ -1,3 +1,4 @@
+import { log } from "../output";
 import { randInt, randFloat } from "../util";
 
 type AlterationArgs = {
@@ -22,6 +23,8 @@ const alterRandomFloat = ({ input, parts }: AlterationArgs) => {
   const start = input.indexOf('"');
   const end = input.indexOf('"', start + 1);
 
+  log(newVal.toFixed(3));
+
   return replaceBetween(input, start, end, newVal.toFixed(3));
 };
 
@@ -37,6 +40,8 @@ const alterRandomInt = ({ input, parts }: AlterationArgs) => {
   const newVal = randInt(min, max);
   const start = input.indexOf('"');
   const end = input.indexOf('"', start + 1);
+
+  log(newVal);
 
   return replaceBetween(input, start, end, newVal.toString());
 };
@@ -63,6 +68,8 @@ const alterRandomPlies = ({ input, parts }: AlterationArgs) => {
   const start = input.indexOf('"');
   const end = input.indexOf('"', start + 1);
   const plies = (new Array(count)).fill(null).map(p => randInt(minPly, maxPly));
+  log(plies);
+
   return replaceBetween(input, start, end, `<${plies.join(' ')}>`);
 };
 
@@ -88,6 +95,8 @@ const alterRandomFStep = ({ input, parts }: AlterationArgs) => {
   const start = input.indexOf('"');
   const end = input.indexOf('"', start + 1);
   const steps = (new Array(count)).fill(null).map(p => randFloat(minStep, maxStep).toFixed(3));
+  log(steps.join(' '));
+
   return replaceBetween(input, start, end, `<${steps.join(' ')}>`);
 };
 
@@ -113,6 +122,8 @@ const alterRandomIStep = ({ input, parts }: AlterationArgs) => {
   const start = input.indexOf('"');
   const end = input.indexOf('"', start + 1);
   const steps = (new Array(count)).fill(null).map(p => randInt(minStep, maxStep));
+  log(steps);
+
   return replaceBetween(input, start, end, `<${steps.join(' ')}>`);
 };
 
@@ -120,6 +131,8 @@ const alterRandomOnOff = ({ input, parts }: AlterationArgs) => {
   const start = input.indexOf('"');
   const end = input.indexOf('"', start + 1);
   const newValue = randInt(0, 1);
+  log(newValue);
+
   return replaceBetween(input, start, end, newValue.toString());
 };
 
@@ -135,6 +148,7 @@ const alterRandomPlyType = ({ input, parts }: AlterationArgs) => {
 
   const end = hashStart !== -1 ? hashStart + 1 : multStart + 2;
   const newValue = Math.random() > 0.5 ? '#' : '|*';
+  log(newValue);
 
   return `${input.slice(0, start)}${newValue}${input.slice(end)}`;
 };
